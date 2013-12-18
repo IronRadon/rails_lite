@@ -18,22 +18,32 @@ class Params
   end
 
   private
-  def parse_www_encoded_form(www_encoded_form)
-    parsed = URI.decode_www_form(www_encoded_form)
+  def parse_www_encoded_form(www_encoded_form) 
+    parsed = URI.decode_www_form(www_encoded_form) #this is an array of [keys, value] pairs
     parsed_hash = {}
-    parsed.each do |value_pair|
-      parsed_key = parse_key(value_pair.first) 
-      parsed_hash[parsed_key.first] ||= {}
-      if parsed_key.last  
-        parsed_hash[parsed_key.first][parsed_key.last] = value_pair.last
-      else
-        parsed_hash[parsed_key.first] = value_pair.last
+  
+    parsed.each do |keyset, value|
+      parsed_keys = parse_key(keyset)
+      #parsed_keys is now an array of keys, e.g. ["cat", "name", "fname"]
+      nesting_level = parsed_hash
+
+      parsed_keys.each_with_index do |key, key_index|
+        if key_index + 1 == parsed_keys.count
+          nesting_level[key] = value
+        else #set up the next level down
+          nesting_level[key] ||= {}
+          nesting_level = nesting_level[key]
+        end
       end
     end
     parsed_hash
   end
 
+
   def parse_key(key)
     key.split(/\]\[|\[|\]/) #returns array like ["cat", "name"]
   end
 end
+
+
+  
