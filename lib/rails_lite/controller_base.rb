@@ -12,7 +12,7 @@ class ControllerBase
     @res = res
     @route_params = route_params
     @already_built_response = :false
-    @params = Params.new(req, route_params)ww
+    @params = Params.new(req, route_params)
   end
 
   def session
