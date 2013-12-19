@@ -4,13 +4,17 @@ require 'debugger'
 class Params
   attr_accessor :params
   def initialize(req, route_params)
-    req.query_string ||= ""
-    body = req.body || ""
-
-    @params = parse_www_encoded_form(req.query_string).merge!(parse_www_encoded_form(body))
+    @params = route_params
+    if req.query_string
+      @params.merge!(parse_www_encoded_form(req.query_string))
+    end
+    if req.body
+    @params.merge!(parse_www_encoded_form(req.body))
+    end
   end
 
   def [](key)
+    @params[key]
   end
 
   def to_s

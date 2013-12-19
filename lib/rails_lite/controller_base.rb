@@ -44,5 +44,7 @@ class ControllerBase
   end
 
   def invoke_action(name)
+    send(name) 
+    render(name) unless already_built_response == :true 
   end
 end
